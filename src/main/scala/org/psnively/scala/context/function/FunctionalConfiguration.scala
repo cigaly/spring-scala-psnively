@@ -162,13 +162,13 @@ trait FunctionalConfiguration extends DelayedInit {
       def apply() = beanFactory.getBean(beanName, beanType)
 
       def init(initFunction: T => Unit): BeanLookupFunction[T] = {
-	initDestroyProcessor.registerInitFunction(beanName, initFunction)
-	this
+  initDestroyProcessor.registerInitFunction(beanName, initFunction)
+  this
       }
 
       def destroy(destroyFunction: T => Unit): BeanLookupFunction[T] = {
-	initDestroyProcessor.registerDestroyFunction(beanName, destroyFunction)
-	this
+  initDestroyProcessor.registerDestroyFunction(beanName, destroyFunction)
+  this
       }
     }
   }
@@ -323,7 +323,7 @@ trait FunctionalConfiguration extends DelayedInit {
   }
 
   private def registerInitDestroyProcessor() {
-    if (!beanRegistry.containsBeanDefinition(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME)) {
+    if (!beanRegistry.getBeanFactory().containsBean(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME)) {
       beanRegistry.getBeanFactory().registerSingleton(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME, new InitDestroyFunctionBeanPostProcessor())
     }
   }

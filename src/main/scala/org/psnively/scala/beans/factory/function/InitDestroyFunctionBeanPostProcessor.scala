@@ -39,71 +39,80 @@ import org.springframework.util.{Assert, StringUtils}
  * @author Arjen Poutsma
  */
 class InitDestroyFunctionBeanPostProcessor
-		extends DestructionAwareBeanPostProcessor with PriorityOrdered {
+    extends DestructionAwareBeanPostProcessor with PriorityOrdered {
 
-	val initFunctions = new mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]]
+  /*
+   * If an implementation of DestructionAwareBeanPostProcessor does not provide
+   * a concrete implementation of this method, Spring's invocation mechanism
+   * silently assumes a method returning true (the effective default before 4.3,
+   * and the to-be-default in the Java 8 method in Spring 5).
+   */
 
-	val destroyFunctions = new mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]]
+  override def requiresDestruction(bean: Any) = true
 
-	@BeanProperty
-	var order: Int = org.springframework.core.Ordered.LOWEST_PRECEDENCE
+  val initFunctions = new mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]]
 
-	/**
-	 * Registers an initialization function for the bean with the given name.
-	 *
-	 * Initialization functions are defined as `(T) => Unit`, i.e. a function that takes the
-	 * bean as parameter, but does not return anything.
-	 *
-	 * @param beanName the name of the bean to register the initialization function for
-	 * @param initFunction the initialization function
-	 * @tparam T the bean type
-	 */
-	def registerInitFunction[T](beanName: String, initFunction: (T) => Unit) {
-		assert(StringUtils.hasLength(beanName), "'beanName' must not be empty")
-		assert(initFunction != null, "'initFunction' must not be null")
+  val destroyFunctions = new mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]]
 
-		addFunction(initFunctions, beanName, initFunction.asInstanceOf[Function1[Any, Unit]])
-	}
+  @BeanProperty
+  var order: Int = org.springframework.core.Ordered.LOWEST_PRECEDENCE
 
-	/**
-	 * Registers a destruction function for the bean with the given name.
-	 *
-	 * Destruction functions are defined as `(T) => Unit`, i.e. a function that takes the
-	 * bean as parameter, but does not return anything.
-	 *
-	 * @param beanName the name of the bean to register the destruction function for
-	 * @param destroyFunction the destruction function
-	 * @tparam T the bean type
-	 */
-	def registerDestroyFunction[T](beanName: String, destroyFunction: (T) => Unit) {
-		Assert.hasLength(beanName, "'beanName' must not be empty")
-		Assert.notNull(destroyFunction, "'destroyFunction' must not be null")
+  /**
+   * Registers an initialization function for the bean with the given name.
+   *
+   * Initialization functions are defined as `(T) => Unit`, i.e. a function that takes the
+   * bean as parameter, but does not return anything.
+   *
+   * @param beanName the name of the bean to register the initialization function for
+   * @param initFunction the initialization function
+   * @tparam T the bean type
+   */
+  def registerInitFunction[T](beanName: String, initFunction: (T) => Unit) {
+    assert(StringUtils.hasLength(beanName), "'beanName' must not be empty")
+    assert(initFunction != null, "'initFunction' must not be null")
 
-		addFunction(destroyFunctions, beanName, destroyFunction.asInstanceOf[Function1[Any, Unit]])
-	}
+    addFunction(initFunctions, beanName, initFunction.asInstanceOf[Function1[Any, Unit]])
+  }
 
-	private def addFunction(functionsMap: mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]],
-	                        beanName: String,
-	                        function: (Any) => Unit) {
+  /**
+   * Registers a destruction function for the bean with the given name.
+   *
+   * Destruction functions are defined as `(T) => Unit`, i.e. a function that takes the
+   * bean as parameter, but does not return anything.
+   *
+   * @param beanName the name of the bean to register the destruction function for
+   * @param destroyFunction the destruction function
+   * @tparam T the bean type
+   */
+  def registerDestroyFunction[T](beanName: String, destroyFunction: (T) => Unit) {
+    Assert.hasLength(beanName, "'beanName' must not be empty")
+    Assert.notNull(destroyFunction, "'destroyFunction' must not be null")
 
-		functionsMap.get(beanName) match {
-			case None =>
-				val list = new ListBuffer[Function1[Any, Unit]]
-				list += function
-				functionsMap(beanName) = list
-			case Some(list) =>
-				list += function
-		}
-	}
+    addFunction(destroyFunctions, beanName, destroyFunction.asInstanceOf[Function1[Any, Unit]])
+  }
 
-	def postProcessBeforeInitialization(bean: AnyRef, beanName: String): AnyRef = {
-		initFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))
-		bean
-	}
+  private def addFunction(functionsMap: mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]],
+                          beanName: String,
+                          function: (Any) => Unit) {
 
-	def postProcessAfterInitialization(bean: AnyRef, beanName: String) = bean
+    functionsMap.get(beanName) match {
+      case None =>
+        val list = new ListBuffer[Function1[Any, Unit]]
+        list += function
+        functionsMap(beanName) = list
+      case Some(list) =>
+        list += function
+    }
+  }
 
-	def postProcessBeforeDestruction(bean: AnyRef, beanName: String) {
-		destroyFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))
-	}
+  def postProcessBeforeInitialization(bean: AnyRef, beanName: String): AnyRef = {
+    initFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))
+    bean
+  }
+
+  def postProcessAfterInitialization(bean: AnyRef, beanName: String) = bean
+
+  def postProcessBeforeDestruction(bean: AnyRef, beanName: String) {
+    destroyFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))
+  }
 }

@@ -39,6 +39,7 @@ class FunctionalConfigContextLoader extends AbstractContextLoader {
 
   override def processContextConfiguration(configAttributes: ContextConfigurationAttributes) {
     configClasses = FunctionalConfigurations.resolveConfigurationsFromTestClass(configAttributes.getDeclaringClass)
+    configAttributes.setClasses(configClasses:_*)  /* TODO : ??? */
   }
 
   override def loadContext(mergedConfig: MergedContextConfiguration): ApplicationContext = {
