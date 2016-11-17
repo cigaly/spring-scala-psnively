@@ -74,9 +74,12 @@ dependencies {
   
   compileOnly "com.fasterxml.jackson.module:${artifactJacksonScala}:${versionJacksonScala}"
   
+  testCompile "org.springframework:spring-web:${versionSpring}"
+  testCompile "org.springframework:spring-jdbc:${versionSpring}"
+  testCompile "org.springframework:spring-test:${versionSpring}"
   testCompile "org.scalatest:${artifactScalatest}:${versionScalatest}"
   testCompile "junit:junit:${versionJunit}"
-  provided 'javax.inject:javax.inject:1'
+  testCompile 'javax.inject:javax.inject:1'
   
   testRuntime "org.hsqldb:hsqldb:${versionHSQLdb}"
   testRuntime "org.springframework:spring-aspects:${versionSpring}"
