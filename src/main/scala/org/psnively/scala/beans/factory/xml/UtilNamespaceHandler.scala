@@ -31,13 +31,13 @@ class UtilNamespaceHandler extends NamespaceHandlerSupport {
 
 	private final val SCOPE_ATTRIBUTE: String = "scope"
 
-	def init() {
+	def init(): Unit = {
 		registerBeanDefinitionParser("seq", new SeqBeanDefinitionParser())
 		registerBeanDefinitionParser("set", new SetBeanDefinitionParser())
 		registerBeanDefinitionParser("map", new MapBeanDefinitionParser())
 	}
 
-	private def parseScope(element: Element, builder: BeanDefinitionBuilder) {
+	private def parseScope(element: Element, builder: BeanDefinitionBuilder): Unit = {
 		val scope: String = element.getAttribute(SCOPE_ATTRIBUTE)
 		if (StringUtils.hasLength(scope)) {
 			builder.setScope(scope)
@@ -50,7 +50,7 @@ class UtilNamespaceHandler extends NamespaceHandlerSupport {
 
 		protected override def doParse(element: Element,
 		                               parserContext: ParserContext,
-		                               builder: BeanDefinitionBuilder) {
+		                               builder: BeanDefinitionBuilder): Unit = {
 			val parsedList: java.util.List[_] = parserContext.getDelegate
 					.parseListElement(element, builder.getRawBeanDefinition)
 			builder.addConstructorArgValue(parsedList)
@@ -70,7 +70,7 @@ class UtilNamespaceHandler extends NamespaceHandlerSupport {
 
 		protected override def doParse(element: Element,
 		                               parserContext: ParserContext,
-		                               builder: BeanDefinitionBuilder) {
+		                               builder: BeanDefinitionBuilder): Unit = {
 			val parsedSet: java.util.Set[_] = parserContext.getDelegate
 					.parseSetElement(element, builder.getRawBeanDefinition)
 			builder.addConstructorArgValue(parsedSet)
@@ -90,7 +90,7 @@ class UtilNamespaceHandler extends NamespaceHandlerSupport {
 
 		protected override def doParse(element: Element,
 		                               parserContext: ParserContext,
-		                               builder: BeanDefinitionBuilder) {
+		                               builder: BeanDefinitionBuilder): Unit = {
 			val parsedMap: java.util.Map[_, _] = parserContext.getDelegate
 					.parseMapElement(element, builder.getRawBeanDefinition)
 			builder.addConstructorArgValue(parsedMap)

@@ -16,11 +16,13 @@
 
 package org.psnively.scala.http.converter.xml
 
-import org.springframework.http.converter.AbstractHttpMessageConverter
-import org.springframework.http.{MediaType, HttpInputMessage, HttpOutputMessage}
-import scala.xml.{XML, Elem}
-import java.nio.charset.Charset
 import java.io.OutputStreamWriter
+import java.nio.charset.Charset
+
+import org.springframework.http.converter.AbstractHttpMessageConverter
+import org.springframework.http.{HttpInputMessage, HttpOutputMessage, MediaType}
+
+import scala.xml.{Elem, XML}
 
 /**
  * @author Arjen Poutsma
@@ -38,7 +40,7 @@ class ElemMessageConverter extends AbstractHttpMessageConverter[Elem](MediaType.
 		XML.load(inputMessage.getBody)
 	}
 
-	def writeInternal(t: Elem, outputMessage: HttpOutputMessage) {
+	def writeInternal(t: Elem, outputMessage: HttpOutputMessage): Unit = {
 		val contentType = getContentType(outputMessage)
 		val writer = new OutputStreamWriter(outputMessage.getBody, contentType)
 
@@ -47,8 +49,8 @@ class ElemMessageConverter extends AbstractHttpMessageConverter[Elem](MediaType.
 
 	private def getContentType(outputMessage: HttpOutputMessage) = {
 		val contentType: MediaType = outputMessage.getHeaders.getContentType
-		if (contentType != null && contentType.getCharSet != null) {
-			contentType.getCharSet
+		if (contentType != null && contentType.getCharset != null) {
+			contentType.getCharset
 		}
 		DEFAULT_CHARSET
 	}

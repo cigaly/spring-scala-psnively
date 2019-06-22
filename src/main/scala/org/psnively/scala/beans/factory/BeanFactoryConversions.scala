@@ -16,9 +16,10 @@
 
 package org.psnively.scala.beans.factory
 
-import org.springframework.beans.factory.{ListableBeanFactory, BeanFactory}
-import scala.collection.JavaConversions._
 import org.psnively.scala.util.TypeTagUtils.typeToClass
+import org.springframework.beans.factory.{BeanFactory, ListableBeanFactory}
+
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 /**
@@ -53,11 +54,11 @@ object BeanFactoryConversions {
 private[psnively] class DefaultRichBeanFactory(val beanFactory: BeanFactory)
 		extends RichBeanFactory {
 
-	def apply[T : ClassTag]() = {
+	def apply[T : ClassTag](): T = {
 		beanFactory.getBean(typeToClass[T])
 	}
 
-	def apply[T : ClassTag](name: String) = {
+	def apply[T : ClassTag](name: String): T = {
 		beanFactory.getBean(name, typeToClass[T])
 	}
 
@@ -73,12 +74,12 @@ private[psnively] class DefaultRichListableBeanFactory(beanFactory: ListableBean
 		                                allowEagerInit)
 	}
 
-	def beansOfType[T : ClassTag](includeNonSingletons: Boolean = true,
-                                allowEagerInit: Boolean = true): Map[String, T] = {
-		beanFactory
-				.getBeansOfType(typeToClass[T], includeNonSingletons, allowEagerInit)
-				.toMap
-	}
+  def beansOfType[T: ClassTag](includeNonSingletons: Boolean = true,
+                               allowEagerInit: Boolean = true): Map[String, T] = {
+    beanFactory
+      .getBeansOfType(typeToClass[T], includeNonSingletons, allowEagerInit)
+      .asScala.toMap
+  }
 
 }
 

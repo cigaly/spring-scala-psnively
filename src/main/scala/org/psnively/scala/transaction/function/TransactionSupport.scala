@@ -70,9 +70,9 @@ trait TransactionSupport {
                                    transactionMode: TransactionMode = ProxyTransactionMode(),
                                    transactionManagerName: String = TransactionSupport.DEFAULT_TRANSACTION_MANAGER_NAME,
                                    order: Int = org.springframework.core.Ordered.LOWEST_PRECEDENCE
-                                   ) {
+                                   ): Unit = {
 
-    def setupAspectJTransactions() {
+    def setupAspectJTransactions(): Unit = {
       val txAspectBeanName = TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME
       val txAspectClassName = TransactionManagementConfigUtils.TRANSACTION_ASPECT_CLASS_NAME
 
@@ -88,7 +88,7 @@ trait TransactionSupport {
       }
     }
 
-    def setupProxyTransactions(proxyTargetClass: Boolean, beanNameGenerator: BeanNameGenerator) {
+    def setupProxyTransactions(proxyTargetClass: Boolean, beanNameGenerator: BeanNameGenerator): Unit = {
 
       def registerWithGeneratedName(beanDefinition: BeanDefinition) = {
         val generatedName = beanNameGenerator.generateBeanName(beanDefinition, beanRegistry)

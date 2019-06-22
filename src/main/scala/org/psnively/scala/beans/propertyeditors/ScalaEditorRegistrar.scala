@@ -27,7 +27,7 @@ import org.springframework.beans.{PropertyEditorRegistry, PropertyEditorRegistra
  */
 class ScalaEditorRegistrar extends PropertyEditorRegistrar {
 
-  def registerCustomEditors(registry: PropertyEditorRegistry) {
+  def registerCustomEditors(registry: PropertyEditorRegistry): Unit = {
 	  // Types
 	  registry.registerCustomEditor(classOf[Regex], new RegexEditor())
 
@@ -42,12 +42,12 @@ class ScalaEditorRegistrar extends PropertyEditorRegistrar {
 	  registry.registerCustomEditor(classOf[scala.collection.mutable.IndexedSeq[Any]], new ScalaCollectionEditor(scala.collection.mutable.IndexedSeq.newBuilder[Any] _))
 
 	  // ResizableArray
-	  registry.registerCustomEditor(classOf[scala.collection.mutable.ResizableArray[Any]], new ScalaCollectionEditor(scala.collection.mutable.ResizableArray.newBuilder[Any] _))
+	  registry.registerCustomEditor(classOf[scala.collection.mutable.Buffer[Any]], new ScalaCollectionEditor(scala.collection.mutable.Buffer.newBuilder[Any] _))
 	  
 	  // LinearSeq
 	  registry.registerCustomEditor(classOf[scala.collection.LinearSeq[Any]], new ScalaCollectionEditor(scala.collection.LinearSeq.newBuilder[Any] _))
 	  registry.registerCustomEditor(classOf[scala.collection.immutable.LinearSeq[Any]], new ScalaCollectionEditor(scala.collection.immutable.LinearSeq.newBuilder[Any] _))
-	  registry.registerCustomEditor(classOf[scala.collection.mutable.LinearSeq[Any]], new ScalaCollectionEditor(scala.collection.mutable.LinearSeq.newBuilder[Any] _))
+	  registry.registerCustomEditor(classOf[scala.collection.mutable.Seq[Any]], new ScalaCollectionEditor(scala.collection.mutable.Buffer.newBuilder[Any] _))
 
 	  // Buffer
 	  registry.registerCustomEditor(classOf[scala.collection.mutable.Buffer[Any]], new ScalaCollectionEditor(scala.collection.mutable.Buffer.newBuilder[Any] _))

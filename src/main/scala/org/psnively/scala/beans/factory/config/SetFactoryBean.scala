@@ -29,7 +29,7 @@ import scala.collection.mutable
  * @param builderFunction function used to create a new set builder
  */
 class SetFactoryBean[T](val sourceSet: scala.collection.Set[T],
-                        val builderFunction: () => mutable.Builder[T, Set[T]])
+                        val builderFunction: () => mutable.Builder[T, scala.collection.Set[T]])
 		extends AbstractFactoryBean[scala.collection.Set[T]] {
 
 	def this(sourceSet: scala.collection.Set[T]) {

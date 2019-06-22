@@ -65,7 +65,7 @@ object JdbcCallbackConversions {
 	 */
 	implicit def asPreparedStatementSetter(setterCallback: PreparedStatement => Unit): PreparedStatementSetter = {
 		new PreparedStatementSetter() {
-			def setValues(statement: PreparedStatement) {
+			def setValues(statement: PreparedStatement): Unit = {
 				setterCallback(statement)
 			}
 		}
@@ -136,7 +136,7 @@ object JdbcCallbackConversions {
 	 */
 	implicit def asRowCallbackHandler(rowProcessor: ResultSet => Unit): RowCallbackHandler = {
 		new RowCallbackHandler() {
-			def processRow(rs: ResultSet) {
+			def processRow(rs: ResultSet): Unit = {
 				rowProcessor(rs)
 			}
 		}

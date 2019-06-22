@@ -28,7 +28,7 @@ import util.matching.Regex
  */
 class RegexEditor extends PropertyEditorSupport {
 
-	override def setAsText(text: String) {
+	override def setAsText(text: String): Unit = {
 		text match {
 			case null => setValue(null)
 			case s => setValue(s.r)

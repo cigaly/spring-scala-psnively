@@ -17,8 +17,9 @@
 package org.psnively.scala.beans.propertyeditors
 
 import java.beans.PropertyEditorSupport
-import scala.collection.JavaConversions._
+
 import scala.collection.mutable
+import scala.jdk.CollectionConverters._
 
 /**
  * Property editor for Scala collections, converting any source collection to a given
@@ -34,34 +35,28 @@ class ScalaCollectionEditor[T, U](val builderFunction: () => mutable.Builder[T, 
                                   val nullAsEmptyCollection: Boolean = false)
 		extends PropertyEditorSupport {
 
-	override def setAsText(text: String) {
+	override def setAsText(text: String): Unit = {
 		setValue(text)
 	}
 
-	override def setValue(value: AnyRef) {
+	override def setValue(value: AnyRef): Unit = {
 		val builder = builderFunction()
 		value match {
-			case null if !nullAsEmptyCollection => {
-				super.setValue(null)
-				return
-			}
-			case null if nullAsEmptyCollection => {
-				builder.clear()
-			}
-			case source: TraversableOnce[T] => {
-				builder ++= source
-			}
-			case javaCollection: java.util.Collection[T] => {
-				builder ++= collectionAsScalaIterable(javaCollection)
-			}
-			case javaMap: java.util.Map[T, U] => {
-				val mapBuilder = builder.asInstanceOf[mutable.Builder[(T, U), _]]
-				mapBuilder ++= mapAsScalaMap(javaMap)
-			}
-			case el=> {
-				builder += el.asInstanceOf[T]
-			}
-		}
+			case null if !nullAsEmptyCollection =>
+        super.setValue(null)
+        return
+      case null if nullAsEmptyCollection =>
+        builder.clear()
+      case source: IterableOnce[T] =>
+        builder ++= source
+      case javaCollection: java.util.Collection[T] =>
+        builder ++= javaCollection.asScala
+      case javaMap: java.util.Map[T, U] =>
+        val mapBuilder = builder.asInstanceOf[mutable.Builder[(T, U), _]]
+        mapBuilder ++= javaMap.asScala
+      case el=>
+        builder += el.asInstanceOf[T]
+    }
 		super.setValue(builder.result())
 	}
 }

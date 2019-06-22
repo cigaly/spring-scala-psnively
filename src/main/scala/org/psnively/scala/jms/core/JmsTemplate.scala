@@ -51,7 +51,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @param function function to create a message
 	 * @note This will only work with a default destination specified!
 	 */
-	def send()(function: Session => Message) {
+	def send()(function: Session => Message): Unit = {
 		javaTemplate.send(functionToMessageCreator(function))
 	}
 
@@ -61,7 +61,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @param destination the destination to send this message to
 	 * @param function function to create a message
 	 */
-	def send(destination: Destination)(function: Session => Message) {
+	def send(destination: Destination)(function: Session => Message): Unit = {
 		javaTemplate.send(destination, functionToMessageCreator(function))
 	}
 
@@ -72,7 +72,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 *                        resolved to an actual destination by a DestinationResolver)
 	 * @param function function to create a message
 	 */
-	def send(destinationName: String)(function: Session => Message) {
+	def send(destinationName: String)(function: Session => Message): Unit = {
 		javaTemplate.send(destinationName, functionToMessageCreator(function))
 	}
 
@@ -94,7 +94,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @throws JmsException converted checked JMSException to unchecked
 	 * @note This will only work with a default destination specified!
 	 */
-	def convertAndSend(message: Any) {
+	def convertAndSend(message: Any): Unit = {
 		javaTemplate.convertAndSend(message)
 	}
 
@@ -105,7 +105,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @param destination the destination to send this message to
 	 * @param message the object to convert to a message
 	 */
-	def convertAndSend(destination: Destination, message: Any) {
+	def convertAndSend(destination: Destination, message: Any): Unit = {
 		javaTemplate.convertAndSend(destination, message)
 	}
 
@@ -117,7 +117,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 *                        resolved to an actual destination by a DestinationResolver)
 	 * @param message the object to convert to a message
 	 */
-	def convertAndSend(destinationName: String, message: Any) {
+	def convertAndSend(destinationName: String, message: Any): Unit = {
 		javaTemplate.convertAndSend(destinationName, message)
 	}
 
@@ -131,7 +131,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @throws JmsException checked JMSException converted to unchecked
 	 * @note This will only work with a default destination specified!
 	 */
-	def convertModifyAndSend(message: Any)(function: Message => Message) {
+	def convertModifyAndSend(message: Any)(function: Message => Message): Unit = {
 		javaTemplate.convertAndSend(message, functionToMessagePostProcessor(function))
 	}
 
@@ -145,7 +145,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @param function the function to modify the message
 	 * @throws JmsException checked JMSException converted to unchecked
 	 */
-	def convertModifyAndSend(destination: Destination, message: Any)(function: Message => Message) {
+	def convertModifyAndSend(destination: Destination, message: Any)(function: Message => Message): Unit = {
 		javaTemplate.convertAndSend(message, functionToMessagePostProcessor(function))
 	}
 
@@ -160,7 +160,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	 * @param function the function to modify the message
 	 * @throws JmsException checked JMSException converted to unchecked
 	 */
-	def convertModifyAndSend(destinationName: String, message: Any)(function: Message => Message) {
+	def convertModifyAndSend(destinationName: String, message: Any)(function: Message => Message): Unit = {
 		javaTemplate.convertAndSend(destinationName, message,
 		                            functionToMessagePostProcessor(function))
 	}

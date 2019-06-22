@@ -69,7 +69,7 @@ object FunctionalConfigurations {
         val annotationMirror = mirror.reflectClass(configurationsAnnotationType.typeSymbol.asClass)
         val constructorSymbol = configurationsAnnotationType.decl(termNames.CONSTRUCTOR).asMethod
         val constructorMirror = annotationMirror.reflectConstructor(constructorSymbol)
-        constructorMirror(configurationsAnnotationArgs.seq).asInstanceOf[FunctionalConfigurations].classes
+        constructorMirror(configurationsAnnotationArgs).asInstanceOf[FunctionalConfigurations].classes
       }
       case None => Seq()
     }

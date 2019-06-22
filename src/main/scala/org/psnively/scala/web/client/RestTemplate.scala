@@ -16,16 +16,18 @@
 
 package org.psnively.scala.web.client
 
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import java.net.URI
+
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.psnively.scala.util.TypeTagUtils.typeToClass
 import org.springframework.http.client.{ClientHttpRequest, ClientHttpRequestFactory, ClientHttpResponse}
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-import org.springframework.http.{HttpHeaders, HttpEntity, ResponseEntity, HttpMethod}
-import org.psnively.scala.util.TypeTagUtils.typeToClass
+import org.springframework.http.{HttpEntity, HttpHeaders, HttpMethod, ResponseEntity}
 import org.springframework.util.ClassUtils
 import org.springframework.web.client.{RequestCallback, ResponseExtractor}
-import scala.collection.JavaConverters._
+
 import scala.collection.{Map, Set}
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
 
 /**
@@ -349,7 +351,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @param uriVariables the variables to expand the template
    * @see HttpEntity
    */
-  def put(url: String, request: Option[Any], uriVariables: Any*) {
+  def put(url: String, request: Option[Any], uriVariables: Any*): Unit = {
     javaTemplate.put(url, request.orNull, asInstanceOfAnyRef(uriVariables))
   }
 
@@ -366,7 +368,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @param uriVariables the variables to expand the template
    * @see HttpEntity
    */
-  def put(url: String, request: Option[Any], uriVariables: Map[String, _]) {
+  def put(url: String, request: Option[Any], uriVariables: Map[String, _]): Unit = {
     javaTemplate.put(url, request.orNull, uriVariables.asJava)
   }
 
@@ -380,7 +382,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @param request the Object to be PUT
    * @see HttpEntity
    */
-  def put(url: URI, request: Option[Any]) {
+  def put(url: URI, request: Option[Any]): Unit = {
     javaTemplate.put(url, request.orNull)
   }
 
@@ -392,7 +394,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @param url the URL
    * @param uriVariables the variables to expand in the template
    */
-  def delete(url: String, uriVariables: Any*) {
+  def delete(url: String, uriVariables: Any*): Unit = {
     javaTemplate.delete(url, asInstanceOfAnyRef(uriVariables))
   }
 
@@ -404,7 +406,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @param url the URL
    * @param uriVariables the variables to expand the template
    */
-  def delete(url: String, uriVariables: Map[String, _]) {
+  def delete(url: String, uriVariables: Map[String, _]): Unit = {
     javaTemplate.delete(url, uriVariables.asJava)
   }
 
@@ -413,7 +415,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    *
    * @param url the URL
    */
-  def delete(url: URI) {
+  def delete(url: URI): Unit = {
     javaTemplate.delete(url)
   }
 
@@ -568,7 +570,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
 
   private def functionToRequestCallback(function: ClientHttpRequest => Unit): RequestCallback =
     new RequestCallback {
-      def doWithRequest(request: ClientHttpRequest) {
+      def doWithRequest(request: ClientHttpRequest): Unit = {
         function(request)
       }
     }

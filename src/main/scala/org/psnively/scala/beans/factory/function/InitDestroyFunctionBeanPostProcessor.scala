@@ -16,13 +16,13 @@
 
 package org.psnively.scala.beans.factory.function
 
-import scala.beans.BeanProperty
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
-
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor
 import org.springframework.core.PriorityOrdered
 import org.springframework.util.{Assert, StringUtils}
+
+import scala.beans.BeanProperty
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * [[org.springframework.beans.factory.config.BeanPostProcessor]] implementation
@@ -67,7 +67,7 @@ class InitDestroyFunctionBeanPostProcessor
    * @param initFunction the initialization function
    * @tparam T the bean type
    */
-  def registerInitFunction[T](beanName: String, initFunction: (T) => Unit) {
+  def registerInitFunction[T](beanName: String, initFunction: T => Unit): Unit = {
     assert(StringUtils.hasLength(beanName), "'beanName' must not be empty")
     assert(initFunction != null, "'initFunction' must not be null")
 
@@ -84,7 +84,7 @@ class InitDestroyFunctionBeanPostProcessor
    * @param destroyFunction the destruction function
    * @tparam T the bean type
    */
-  def registerDestroyFunction[T](beanName: String, destroyFunction: (T) => Unit) {
+  def registerDestroyFunction[T](beanName: String, destroyFunction: T => Unit): Unit = {
     Assert.hasLength(beanName, "'beanName' must not be empty")
     Assert.notNull(destroyFunction, "'destroyFunction' must not be null")
 
@@ -93,7 +93,7 @@ class InitDestroyFunctionBeanPostProcessor
 
   private def addFunction(functionsMap: mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]],
                           beanName: String,
-                          function: (Any) => Unit) {
+                          function: Any => Unit): Unit = {
 
     functionsMap.get(beanName) match {
       case None =>
@@ -105,14 +105,14 @@ class InitDestroyFunctionBeanPostProcessor
     }
   }
 
-  def postProcessBeforeInitialization(bean: AnyRef, beanName: String): AnyRef = {
+  override def postProcessBeforeInitialization(bean: AnyRef, beanName: String): AnyRef = {
     initFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))
     bean
   }
 
-  def postProcessAfterInitialization(bean: AnyRef, beanName: String) = bean
+  override def postProcessAfterInitialization(bean: AnyRef, beanName: String) = bean
 
-  def postProcessBeforeDestruction(bean: AnyRef, beanName: String) {
+  def postProcessBeforeDestruction(bean: AnyRef, beanName: String): Unit = {
     destroyFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))
   }
 }

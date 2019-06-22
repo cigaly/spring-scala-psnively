@@ -48,7 +48,7 @@ object AdviceConversions {
    */
   implicit def asMethodBeforeAdvice(advice: (Method, Array[AnyRef], Any) => Any): MethodBeforeAdvice = {
     new MethodBeforeAdvice {
-      def before(method: Method, args: Array[AnyRef], target: Any) {
+      def before(method: Method, args: Array[AnyRef], target: Any): Unit = {
         advice(method, args, target)
       }
     }
@@ -62,7 +62,7 @@ object AdviceConversions {
    */
   implicit def asAfterReturningAdvice(advice: (Any, Method, Array[AnyRef], Any) => Any): AfterReturningAdvice = {
     new AfterReturningAdvice {
-      def afterReturning(returnValue: Any, method: Method, args: Array[AnyRef], target: Any) {
+      def afterReturning(returnValue: Any, method: Method, args: Array[AnyRef], target: Any): Unit = {
         advice(returnValue, method, args, target)
       }
     }

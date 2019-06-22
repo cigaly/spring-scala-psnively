@@ -16,8 +16,7 @@
 
 package org.psnively.scala.transaction.support
 
-import org.springframework.transaction.support.TransactionSynchronization
-import org.springframework.transaction.support.{TransactionSynchronizationManager => DelegateSynchronizationManager}
+import org.springframework.transaction.support.{TransactionSynchronization, TransactionSynchronizationManager => DelegateSynchronizationManager}
 
 /**
  * Scala-based convenience wrapper for the Spring
@@ -36,38 +35,38 @@ object TransactionSynchronizationManager {
    * @param synchronization partial function representing callback to be executed when particular
    * [[org.psnively.scala.transaction.support.SynchronizationEvent]] is fired.
    */
-  def registerSynchronization(synchronization: PartialFunction[SynchronizationEvent, Unit]) {
-    def propagateEvent(e: SynchronizationEvent) {
+  def registerSynchronization(synchronization: PartialFunction[SynchronizationEvent, Unit]): Unit = {
+    def propagateEvent(e: SynchronizationEvent): Unit = {
       if (synchronization.isDefinedAt(e))
         synchronization(e)
     }
 
     DelegateSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-      def suspend() {
+      override def suspend(): Unit = {
         propagateEvent(SuspendEvent)
       }
 
-      def resume() {
+      override def resume(): Unit = {
         propagateEvent(ResumeEvent)
       }
 
-      def flush() {
+      override def flush(): Unit = {
         propagateEvent(FlushEvent)
       }
 
-      def beforeCommit(readOnly: Boolean) {
+      override def beforeCommit(readOnly: Boolean): Unit = {
         propagateEvent(BeforeCommitEvent(readOnly))
       }
 
-      def beforeCompletion() {
+      override def beforeCompletion(): Unit = {
         propagateEvent(BeforeCompletionEvent)
       }
 
-      def afterCommit() {
+      override def afterCommit(): Unit = {
         propagateEvent(AfterCommitEvent)
       }
 
-      def afterCompletion(status: Int) {
+      override def afterCompletion(status: Int): Unit = {
         propagateEvent(AfterCompletionEvent(status))
       }
     })

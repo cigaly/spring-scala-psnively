@@ -260,7 +260,7 @@ trait FunctionalConfiguration extends DelayedInit {
     * @param resources the resource paths to import.  Resource-loading prefixes
     *                  such as ``classpath:`` and ``file:``, etc may be used.
     */
-  protected def importXml(resources: String*) {
+  protected def importXml(resources: String*): Unit = {
     val beanDefinitionReader = new XmlBeanDefinitionReader(beanRegistry)
     beanDefinitionReader.loadBeanDefinitions(resources: _*)
   }
@@ -274,7 +274,7 @@ trait FunctionalConfiguration extends DelayedInit {
     *
     * @param annotatedClasses the ``@Configuration`` classes to import
     */
-  protected def importClass(annotatedClasses: Class[_]*) {
+  protected def importClass(annotatedClasses: Class[_]*): Unit = {
     val beanDefinitionReader = new
       AnnotatedBeanDefinitionReader(beanRegistry, environment)
     beanDefinitionReader.register(annotatedClasses: _*)
@@ -286,7 +286,7 @@ trait FunctionalConfiguration extends DelayedInit {
 
     * @tparam T ``@Configuration`` class to import
     */
-  protected def importClass[T: ClassTag]() {
+  protected def importClass[T: ClassTag](): Unit = {
     importClass(typeToClass[T])
   }
 
@@ -297,7 +297,7 @@ trait FunctionalConfiguration extends DelayedInit {
     * @param beanNameGenerator the bean name generator
     */
   private[context] def register(applicationContext: GenericApplicationContext,
-    beanNameGenerator: BeanNameGenerator) {
+    beanNameGenerator: BeanNameGenerator): Unit = {
 
     require(applicationContext != null, "'applicationContext' must not be null")
     require(beanNameGenerator != null, "'beanNameGenerator' must not be null")
@@ -318,17 +318,17 @@ trait FunctionalConfiguration extends DelayedInit {
     *
     * @param function the function to be added
     */
-  final def onRegister(function: (GenericApplicationContext, BeanNameGenerator) => Unit ) {
+  final def onRegister(function: (GenericApplicationContext, BeanNameGenerator) => Unit ): Unit = {
     registrationCode += function
   }
 
-  private def registerInitDestroyProcessor() {
+  private def registerInitDestroyProcessor(): Unit = {
     if (!beanRegistry.getBeanFactory().containsBean(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME)) {
       beanRegistry.getBeanFactory().registerSingleton(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME, new InitDestroyFunctionBeanPostProcessor())
     }
   }
 
-  final override def delayedInit(body: => Unit) {
+  final override def delayedInit(body: => Unit): Unit = {
     initCode += (() => body)
   }
 

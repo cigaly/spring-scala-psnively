@@ -1,48 +1,17 @@
 apply plugin: 'scala'
-//apply plugin: 'pmd'
-//apply plugin: 'findbugs'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
 
+ext.scalaMajor = versionScala.replaceFirst(/(\d+\.\d+)\.(\d)/) { dummy, major, minor -> major }
+
 group = 'org.psnively'
-//project.archivesBaseName = 'spring_scala_4-3-0_2.11'
-//project.archivesBaseName = 'spring_scala_5-1-8_2.13'
-version = '1.0.0'
-version = '1.0.0'
+//project.archivesBaseName = "spring_scala_${versionSpring.replaceAll('\\.([^.]+)$', '').replaceAll('\\.', '_')}_${scalaMajor}"
+project.archivesBaseName = "spring_scala_${scalaMajor}"
+version = versionSpring
 
-//ext.versionScala = "2.11.8"
-//ext.versionScala = "2.12.0"
-ext.versionScala = "2.12.8"
-
-//ext.artifactScalaXML = "scala-xml_2.11"
-//ext.artifactScalaXML = "scala-xml_2.12"
-ext.artifactScalaXML = "scala-xml_2.13"
-//ext.versionScalaXML = "1.0.6"
-ext.versionScalaXML = "1.2.0"
-
-ext.versionCommonsLogging = "1.2"
-//ext.versionSpring = "4.3.4.RELEASE"
-ext.versionSpring = "5.1.8.RELEASE"
-
-ext.versionJavaxJMS = "2.0.1"
-
-//ext.artifactJacksonScala = "jackson-module-scala_2.11"
-//ext.artifactJacksonScala = "jackson-module-scala_2.12"
-ext.artifactJacksonScala = "jackson-module-scala_2.13"
-//ext.versionJacksonScala = "2.8.4"
-ext.versionJacksonScala = "2.9.9"
-
-//ext.artifactScalatest = "scalatest_2.11"
-//ext.versionScalatest = "2.2.6"
-//ext.artifactScalatest = "scalatest_2.12"
-//ext.versionScalatest = "3.0.1"
-ext.artifactScalatest = "scalatest_2.13"
-ext.versionScalatest = "3.0.8"
-
-ext.versionJunit = "4.12"
-
-//ext.versionHSQLdb = "2.3.4"
-ext.versionHSQLdb = "2.4.1"
+ext.artifactScalaXML = "scala-xml_${scalaMajor}"
+ext.artifactJacksonScala = "jackson-module-scala_${scalaMajor}"
+ext.artifactScalatest = "scalatest_${scalaMajor}"
 
 configurations {
     provided
@@ -53,66 +22,58 @@ repositories {
     mavenCentral()
 }
 
-
 sourceSets {
-
-  main {
-      scala {
-          srcDir 'src/main/scala'
-          srcDir 'src/main/scala-2.11'
-      }
-  }
+    main {
+        scala {
+            srcDir 'src/main/scala'
+            srcDir 'src/main/scala-2.11'
+        }
+    }
 }
 
-//[ 'beans', 'context', 'jdbc', 'jms', 'mvc', 'tx', 'web' ].each { 
-//  compileJava.dependsOn "$it:classes"
-//  compileScala.dependsOn "$it:classes"
-//}
-
 dependencies {
-  compile "org.scala-lang:scala-library:${versionScala}"
-  compile "org.scala-lang:scala-reflect:${versionScala}"
-  compile "org.scala-lang.modules:${artifactScalaXML}:${versionScalaXML}"
+    compile "org.scala-lang:scala-library:${versionScala}"
+    compile "org.scala-lang:scala-reflect:${versionScala}"
+    compile "org.scala-lang.modules:${artifactScalaXML}:${versionScalaXML}"
 
-  compile "commons-logging:commons-logging:${versionCommonsLogging}"
+    compile "commons-logging:commons-logging:${versionCommonsLogging}"
 
-  compileOnly "org.springframework:spring-core:${versionSpring}"
-  compileOnly "org.springframework:spring-beans:${versionSpring}"
-  compileOnly "org.springframework:spring-aop:${versionSpring}"
-  compileOnly "org.springframework:spring-context:${versionSpring}"
-  compileOnly "org.springframework:spring-web:${versionSpring}"
-  compileOnly "org.springframework:spring-jdbc:${versionSpring}"
-  compileOnly "org.springframework:spring-jms:${versionSpring}"
-  compileOnly "org.springframework:spring-test:${versionSpring}"	// test ?!?
-  
-  compileOnly "javax.jms:javax.jms-api:${versionJavaxJMS}"
-  
-  compileOnly "com.fasterxml.jackson.module:${artifactJacksonScala}:${versionJacksonScala}"
-  
-  testCompile "org.springframework:spring-web:${versionSpring}"
-  testCompile "org.springframework:spring-jdbc:${versionSpring}"
-  testCompile "org.springframework:spring-test:${versionSpring}"
-  testCompile "org.scalatest:${artifactScalatest}:${versionScalatest}"
-  testCompile "junit:junit:${versionJunit}"
-  testCompile 'javax.inject:javax.inject:1'
-  
-  testRuntime "org.hsqldb:hsqldb:${versionHSQLdb}"
-  testRuntime "org.springframework:spring-aspects:${versionSpring}"
+    compileOnly "org.springframework:spring-core:${versionSpring}"
+    compileOnly "org.springframework:spring-beans:${versionSpring}"
+    compileOnly "org.springframework:spring-aop:${versionSpring}"
+    compileOnly "org.springframework:spring-context:${versionSpring}"
+    compileOnly "org.springframework:spring-web:${versionSpring}"
+    compileOnly "org.springframework:spring-jdbc:${versionSpring}"
+    compileOnly "org.springframework:spring-jms:${versionSpring}"
+    compileOnly "org.springframework:spring-test:${versionSpring}"    // test ?!?
+
+    compileOnly "javax.jms:javax.jms-api:${versionJavaxJMS}"
+
+    compileOnly "com.fasterxml.jackson.module:${artifactJacksonScala}:${versionJacksonScala}"
+
+    testCompile "org.springframework:spring-web:${versionSpring}"
+    testCompile "org.springframework:spring-jdbc:${versionSpring}"
+    testCompile "org.springframework:spring-test:${versionSpring}"
+    testCompile "org.scalatest:${artifactScalatest}:${versionScalatest}"
+    testCompile "junit:junit:${versionJunit}"
+    testCompile 'javax.inject:javax.inject:1'
+
+    testRuntime "org.hsqldb:hsqldb:${versionHSQLdb}"
+    testRuntime "org.springframework:spring-aspects:${versionSpring}"
 
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc.destinationDir
 }
 
 artifacts {
     archives sourcesJar
-    //archives javadocJar
+    archives javadocJar
 }
-

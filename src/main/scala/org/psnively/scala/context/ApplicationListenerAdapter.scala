@@ -27,7 +27,7 @@ import org.springframework.context.{ApplicationListener, ApplicationEvent}
  */
 trait ApplicationListenerAdapter extends ApplicationListener[ApplicationEvent] {
 
-	final def onApplicationEvent(event: ApplicationEvent) {
+	final def onApplicationEvent(event: ApplicationEvent): Unit = {
 		if (onEvent isDefinedAt event) {
 			onEvent(event)
 		}

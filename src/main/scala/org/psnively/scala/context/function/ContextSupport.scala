@@ -49,7 +49,7 @@ trait ContextSupport {
 	 * EJB3's `TransactionAttribute` annotation. Consider the use of the `TransactionSupport`
 	 * configuration trait for that purpose.
 	 */
-	def enableAnnotationConfig() {
+	def enableAnnotationConfig(): Unit = {
 		onRegister((applicationContext: GenericApplicationContext,
 		                      beanNameGenerator: BeanNameGenerator) => {
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(applicationContext)
@@ -93,7 +93,7 @@ trait ContextSupport {
 	                  scopeResolver: Option[ScopeMetadataResolver] = None,
 	                  scopedProxy: Option[ScopedProxyMode] = None,
 	                  includeFilters: Seq[TypeFilter] = Seq.empty,
-	                  excludeFilters: Seq[TypeFilter] = Seq.empty) {
+	                  excludeFilters: Seq[TypeFilter] = Seq.empty): Unit = {
 		if (scopeResolver.isDefined && scopedProxy.isDefined) {
 			throw new IllegalArgumentException(
 				"Cannot define both 'scopeResolver' and 'scopedProxy' on 'componentScan' option")
@@ -120,7 +120,7 @@ trait ContextSupport {
 	 *
 	 * @param basePackages the packages to check for annotated classes
 	 */
-	def componentScan(basePackages: String*) {
+	def componentScan(basePackages: String*): Unit = {
 		componentScan(basePackages = basePackages)
 	}
 

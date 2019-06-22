@@ -37,7 +37,7 @@ class FunctionalConfigContextLoader extends AbstractContextLoader {
 
   private var configClasses: Seq[Class[_ <: FunctionalConfiguration]] = _
 
-  override def processContextConfiguration(configAttributes: ContextConfigurationAttributes) {
+  override def processContextConfiguration(configAttributes: ContextConfigurationAttributes): Unit = {
     configClasses = FunctionalConfigurations.resolveConfigurationsFromTestClass(configAttributes.getDeclaringClass)
     configAttributes.setClasses(configClasses:_*)  /* TODO : ??? */
   }

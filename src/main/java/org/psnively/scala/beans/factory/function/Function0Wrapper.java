@@ -20,7 +20,7 @@ import scala.Function0;
 
 /**
  * Simple static wrapper for a Scala {@link Function0}.
- * <p/>
+ * <br>
  * Used by the {@link FunctionalRootBeanDefinition} as a provider of a static
  * factory method. In Java, because the Spring bean factory natively does not handle Scala
  * Objects well.
