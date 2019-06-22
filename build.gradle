@@ -5,29 +5,44 @@ apply plugin: 'maven'
 apply plugin: 'eclipse'
 
 group = 'org.psnively'
-project.archivesBaseName = 'spring_scala_4-3-0_2.11'
+//project.archivesBaseName = 'spring_scala_4-3-0_2.11'
+//project.archivesBaseName = 'spring_scala_5-1-8_2.13'
+version = '1.0.0'
 version = '1.0.0'
 
-ext.versionScala = "2.11.8"
+//ext.versionScala = "2.11.8"
+//ext.versionScala = "2.12.0"
+ext.versionScala = "2.12.8"
 
-ext.artifactScalaXML = "scala-xml_2.11"
-ext.versionScalaXML = "1.0.6"
+//ext.artifactScalaXML = "scala-xml_2.11"
+//ext.artifactScalaXML = "scala-xml_2.12"
+ext.artifactScalaXML = "scala-xml_2.13"
+//ext.versionScalaXML = "1.0.6"
+ext.versionScalaXML = "1.2.0"
 
 ext.versionCommonsLogging = "1.2"
-ext.versionSpring = "4.3.4.RELEASE"
+//ext.versionSpring = "4.3.4.RELEASE"
+ext.versionSpring = "5.1.8.RELEASE"
 
 ext.versionJavaxJMS = "2.0.1"
 
-ext.artifactJacksonScala = "jackson-module-scala_2.11"
-ext.versionJacksonScala = "2.8.4"
+//ext.artifactJacksonScala = "jackson-module-scala_2.11"
+//ext.artifactJacksonScala = "jackson-module-scala_2.12"
+ext.artifactJacksonScala = "jackson-module-scala_2.13"
+//ext.versionJacksonScala = "2.8.4"
+ext.versionJacksonScala = "2.9.9"
 
-ext.artifactScalatest = "scalatest_2.11"
+//ext.artifactScalatest = "scalatest_2.11"
+//ext.versionScalatest = "2.2.6"
+//ext.artifactScalatest = "scalatest_2.12"
 //ext.versionScalatest = "3.0.1"
-ext.versionScalatest = "2.2.6"
+ext.artifactScalatest = "scalatest_2.13"
+ext.versionScalatest = "3.0.8"
 
 ext.versionJunit = "4.12"
 
-ext.versionHSQLdb = "2.3.4"
+//ext.versionHSQLdb = "2.3.4"
+ext.versionHSQLdb = "2.4.1"
 
 configurations {
     provided
