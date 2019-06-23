@@ -50,9 +50,9 @@ class InitDestroyFunctionBeanPostProcessor
 
   override def requiresDestruction(bean: Any) = true
 
-  val initFunctions = new mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]]
+  val initFunctions = new mutable.HashMap[String, ListBuffer[Any => Unit]]
 
-  val destroyFunctions = new mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]]
+  val destroyFunctions = new mutable.HashMap[String, ListBuffer[Any => Unit]]
 
   @BeanProperty
   var order: Int = org.springframework.core.Ordered.LOWEST_PRECEDENCE
@@ -71,7 +71,7 @@ class InitDestroyFunctionBeanPostProcessor
     assert(StringUtils.hasLength(beanName), "'beanName' must not be empty")
     assert(initFunction != null, "'initFunction' must not be null")
 
-    addFunction(initFunctions, beanName, initFunction.asInstanceOf[Function1[Any, Unit]])
+    addFunction(initFunctions, beanName, initFunction.asInstanceOf[Any => Unit])
   }
 
   /**
@@ -88,16 +88,16 @@ class InitDestroyFunctionBeanPostProcessor
     Assert.hasLength(beanName, "'beanName' must not be empty")
     Assert.notNull(destroyFunction, "'destroyFunction' must not be null")
 
-    addFunction(destroyFunctions, beanName, destroyFunction.asInstanceOf[Function1[Any, Unit]])
+    addFunction(destroyFunctions, beanName, destroyFunction.asInstanceOf[Any => Unit])
   }
 
-  private def addFunction(functionsMap: mutable.HashMap[String, ListBuffer[Function1[Any, Unit]]],
+  private def addFunction(functionsMap: mutable.HashMap[String, ListBuffer[Any => Unit]],
                           beanName: String,
                           function: Any => Unit): Unit = {
 
     functionsMap.get(beanName) match {
       case None =>
-        val list = new ListBuffer[Function1[Any, Unit]]
+        val list = new ListBuffer[Any => Unit]
         list += function
         functionsMap(beanName) = list
       case Some(list) =>
@@ -110,7 +110,7 @@ class InitDestroyFunctionBeanPostProcessor
     bean
   }
 
-  override def postProcessAfterInitialization(bean: AnyRef, beanName: String) = bean
+  override def postProcessAfterInitialization(bean: AnyRef, beanName: String): AnyRef = bean
 
   def postProcessBeforeDestruction(bean: AnyRef, beanName: String): Unit = {
     destroyFunctions.get(beanName).foreach(_.foreach(_.apply(bean)))

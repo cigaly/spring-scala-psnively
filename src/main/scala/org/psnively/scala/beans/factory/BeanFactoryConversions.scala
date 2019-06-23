@@ -20,6 +20,7 @@ import org.psnively.scala.util.TypeTagUtils.typeToClass
 import org.springframework.beans.factory.{BeanFactory, ListableBeanFactory}
 
 import scala.jdk.CollectionConverters._
+import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
 /**

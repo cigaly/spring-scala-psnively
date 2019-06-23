@@ -17,7 +17,8 @@
 package org.psnively.scala.beans.factory.config
 
 import org.springframework.beans.factory.config.AbstractFactoryBean
-import scala.collection.{mutable, Seq}
+
+import scala.collection.{Seq, mutable}
 
 /**
  * Simple factory for shared [[scala.collection.Seq]] instances. Allows for central setup
@@ -36,7 +37,7 @@ class SeqFactoryBean[T](val sourceSeq: Seq[T],
 		this(sourceSeq, Seq.newBuilder[T] _)
 	}
 
-	override def getObjectType = classOf[Seq[T]]
+	override def getObjectType: Class[Seq[T]] = classOf[Seq[T]]
 
 	override def createInstance(): Seq[T] = {
 		val builder = builderFunction()

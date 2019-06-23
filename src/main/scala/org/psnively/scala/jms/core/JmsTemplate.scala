@@ -16,8 +16,7 @@
 
 package org.psnively.scala.jms.core
 
-import javax.jms.{ConnectionFactory, Destination, Message, MessageProducer, Queue, QueueBrowser, Session}
-
+import javax.jms._
 import org.springframework.jms.JmsException
 import org.springframework.jms.core.{JmsTemplate => JavaTemplate, _}
 
@@ -77,9 +76,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	}
 
 	private def functionToMessageCreator(function: Session => Message): MessageCreator =
-		new MessageCreator {
-			def createMessage(session: Session) = function(session)
-		}
+    (session: Session) => function(session)
 
 
 	//-------------------------------------------------------------------------
@@ -167,7 +164,7 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 
 	private def functionToMessagePostProcessor(function: Message => Message) =
 		new MessagePostProcessor {
-			def postProcessMessage(message: Message) = function(message)
+			def postProcessMessage(message: Message): Message = function(message)
 		}
 
 	//-------------------------------------------------------------------------
@@ -436,9 +433,6 @@ class JmsTemplate(val javaTemplate: JavaTemplate) {
 	}
 
 	private def functionToBrowserCallback[T](function: (Session, QueueBrowser) => T): BrowserCallback[T] =
-		new BrowserCallback[T] {
-			def doInJms(session: Session, browser: QueueBrowser) = function(session,
-			                                                                browser)
-		}
+    (session: Session, browser: QueueBrowser) => function(session, browser)
 
 }

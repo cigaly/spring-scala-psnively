@@ -33,5 +33,5 @@ class FunctionalRootBeanDefinition[T](beanFunction: () => T, targetType: Class[T
 	setTargetType(targetType)
 
 
-	def beanCreationFunction = beanFunction
+	def beanCreationFunction: () => T = beanFunction
 }

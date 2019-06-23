@@ -16,9 +16,11 @@
 
 package org.psnively.scala.context
 
-import org.springframework.context.ApplicationContext
-import org.psnively.scala.beans.factory.RichListableBeanFactory
 import org.psnively.scala.beans.factory.BeanFactoryConversions._
+import org.psnively.scala.beans.factory.RichListableBeanFactory
+import org.springframework.context.ApplicationContext
+
+import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
 /**
@@ -46,14 +48,14 @@ private[psnively] class DefaultRichApplicationContext(val appContext: Applicatio
 
 	private val beanFactory: RichListableBeanFactory = appContext
 
-	def apply[T : ClassTag]() = beanFactory.apply[T]()
+	def apply[T : ClassTag](): T = beanFactory.apply[T]()
 
-	def apply[T : ClassTag](name: String) = beanFactory.apply[T](name)
+	def apply[T : ClassTag](name: String): T = beanFactory.apply[T](name)
 
-	def beanNamesForType[T : ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean) =
+	def beanNamesForType[T : ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean): Seq[String] =
 		beanFactory.beanNamesForType[T](includeNonSingletons, allowEagerInit)
 
-	def beansOfType[T : ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean) =
+	def beansOfType[T : ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean): Map[String, T] =
 		beanFactory.beansOfType[T](includeNonSingletons, allowEagerInit)
 
 }

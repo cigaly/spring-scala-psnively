@@ -16,8 +16,11 @@
 
 package org.psnively.scala.jdbc.core
 
-import java.sql.{CallableStatement, PreparedStatement, Connection, ResultSet}
+import java.sql.{CallableStatement, Connection, PreparedStatement, ResultSet}
+
 import org.springframework.jdbc.core._
+
+import scala.language.implicitConversions
 
 /**
  * A collection of implicit conversions between
@@ -36,10 +39,7 @@ object JdbcCallbackConversions {
 	 * @return the `PreparedStatementCreator`
 	 */
 	implicit def asPreparedStatementCreator(statementCreator: Connection => PreparedStatement): PreparedStatementCreator = {
-		new PreparedStatementCreator {
-			def createPreparedStatement(connection: Connection): PreparedStatement = statementCreator(
-				connection)
-		}
+    connection: Connection => statementCreator(connection)
 	}
 
 	/**
@@ -50,10 +50,7 @@ object JdbcCallbackConversions {
 	 * @return the `PreparedStatementCallback`
 	 */
 	implicit def asPreparedStatementCallback[T](statementCallback: PreparedStatement => T): PreparedStatementCallback[T] = {
-		new PreparedStatementCallback[T] {
-			def doInPreparedStatement(statement: PreparedStatement): T = statementCallback(
-				statement)
-		}
+    statement: PreparedStatement => statementCallback(statement)
 	}
 
 	/**
@@ -64,11 +61,9 @@ object JdbcCallbackConversions {
 	 * @return the `PreparedStatementSetter`
 	 */
 	implicit def asPreparedStatementSetter(setterCallback: PreparedStatement => Unit): PreparedStatementSetter = {
-		new PreparedStatementSetter() {
-			def setValues(statement: PreparedStatement): Unit = {
-				setterCallback(statement)
-			}
-		}
+    statement: PreparedStatement => {
+      setterCallback(statement)
+    }
 	}
 
 	// Callable Statement conversions
@@ -80,10 +75,7 @@ object JdbcCallbackConversions {
 	 * @return the `CallableStatementCreator`
 	 */
 	implicit def asCallableStatementCreator(statementCreator: Connection => CallableStatement): CallableStatementCreator = {
-		new CallableStatementCreator() {
-			def createCallableStatement(connection: Connection): CallableStatement = statementCreator(
-				connection)
-		}
+    connection: Connection => statementCreator(connection)
 	}
 
 	/**
@@ -94,10 +86,7 @@ object JdbcCallbackConversions {
 	 * @return the `CallableStatementCallback`
 	 */
 	implicit def asCallableStatementCallback[T](statementCallback: CallableStatement => T): CallableStatementCallback[T] = {
-		new CallableStatementCallback[T] {
-			def doInCallableStatement(statement: CallableStatement): T = statementCallback(
-				statement)
-		}
+    statement: CallableStatement => statementCallback(statement)
 	}
 
 	// Result Set conversions
@@ -109,9 +98,7 @@ object JdbcCallbackConversions {
 	 * @return the `RowMapper`
 	 */
 	implicit def asRowMapper[T](mapper: (ResultSet, Int) => T): RowMapper[T] = {
-		new RowMapper[T] {
-			def mapRow(resultSet: ResultSet, rowNum: Int) = mapper(resultSet, rowNum)
-		}
+    (resultSet: ResultSet, rowNum: Int) => mapper(resultSet, rowNum)
 	}
 
 	/**
@@ -122,9 +109,7 @@ object JdbcCallbackConversions {
 	 * @return the `ResultSetExtractor`
 	 */
 	implicit def asResultSetExtractor[T](extractor: ResultSet => T): ResultSetExtractor[T] = {
-		new ResultSetExtractor[T]() {
-			def extractData(resultSet: ResultSet): T = extractor(resultSet)
-		}
+    resultSet: ResultSet => extractor(resultSet)
 	}
 
 	/**
@@ -135,11 +120,9 @@ object JdbcCallbackConversions {
 	 * @return the `RowCallbackHandler`
 	 */
 	implicit def asRowCallbackHandler(rowProcessor: ResultSet => Unit): RowCallbackHandler = {
-		new RowCallbackHandler() {
-			def processRow(rs: ResultSet): Unit = {
-				rowProcessor(rs)
-			}
-		}
+    rs: ResultSet => {
+      rowProcessor(rs)
+    }
 	}
 
 }

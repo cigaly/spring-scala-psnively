@@ -16,9 +16,12 @@
 
 package org.psnively.scala.aop
 
-import org.springframework.aop.{AfterReturningAdvice, MethodBeforeAdvice}
 import java.lang.reflect.Method
-import org.aopalliance.intercept.{MethodInvocation, MethodInterceptor}
+
+import org.aopalliance.intercept.{MethodInterceptor, MethodInvocation}
+import org.springframework.aop.{AfterReturningAdvice, MethodBeforeAdvice}
+
+import scala.language.implicitConversions
 
 /**
  * A collection of implicit conversions between functions and Spring AOP advice.
@@ -35,9 +38,7 @@ object AdviceConversions {
    * @return the method interceptor
    */
   implicit def asMethodInterceptor(advice: MethodInvocation => AnyRef): MethodInterceptor = {
-    new MethodInterceptor {
-      def invoke(invocation: MethodInvocation) = advice(invocation)
-    }
+    invocation: MethodInvocation => advice(invocation)
   }
 
   /**
@@ -47,10 +48,8 @@ object AdviceConversions {
    * @return the method before advice
    */
   implicit def asMethodBeforeAdvice(advice: (Method, Array[AnyRef], Any) => Any): MethodBeforeAdvice = {
-    new MethodBeforeAdvice {
-      def before(method: Method, args: Array[AnyRef], target: Any): Unit = {
-        advice(method, args, target)
-      }
+    (method: Method, args: Array[AnyRef], target: Any) => {
+      advice(method, args, target)
     }
   }
 
@@ -61,10 +60,8 @@ object AdviceConversions {
    * @return an after returning advice
    */
   implicit def asAfterReturningAdvice(advice: (Any, Method, Array[AnyRef], Any) => Any): AfterReturningAdvice = {
-    new AfterReturningAdvice {
-      def afterReturning(returnValue: Any, method: Method, args: Array[AnyRef], target: Any): Unit = {
-        advice(returnValue, method, args, target)
-      }
+    (returnValue: Any, method: Method, args: Array[AnyRef], target: Any) => {
+      advice(returnValue, method, args, target)
     }
   }
 

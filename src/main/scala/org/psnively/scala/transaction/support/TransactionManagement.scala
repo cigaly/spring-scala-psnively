@@ -17,9 +17,8 @@
 package org.psnively.scala.transaction.support
 
 import org.springframework.transaction.annotation.{Isolation, Propagation}
-import org.springframework.transaction.support.TransactionCallback
-import org.springframework.transaction.{TransactionStatus, TransactionDefinition, PlatformTransactionManager}
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute
+import org.springframework.transaction.{PlatformTransactionManager, TransactionDefinition, TransactionException, TransactionStatus}
 
 /**
  * Trait that simplifies functional transaction demarcation and transaction exception handling.
@@ -66,9 +65,7 @@ trait TransactionManagement {
 
 		val template = new org.springframework.transaction.support.TransactionTemplate(transactionManager,
 			transactionAttribute)
-		template.execute(new TransactionCallback[T] {
-			def doInTransaction(status: TransactionStatus) = function(status)
-		})
+		template.execute((status: TransactionStatus) => function(status))
 	}
 
 

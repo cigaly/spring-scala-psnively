@@ -32,7 +32,7 @@ class ElemMessageConverter extends AbstractHttpMessageConverter[Elem](MediaType.
 
 	final val DEFAULT_CHARSET: Charset = Charset.forName("UTF-8")
 
-	def supports(clazz: Class[_]) = {
+	def supports(clazz: Class[_]): Boolean = {
 		classOf[Elem] == clazz
 	}
 
@@ -44,7 +44,7 @@ class ElemMessageConverter extends AbstractHttpMessageConverter[Elem](MediaType.
 		val contentType = getContentType(outputMessage)
 		val writer = new OutputStreamWriter(outputMessage.getBody, contentType)
 
-		XML.write(writer, t, contentType.toString, false, null)
+		XML.write(writer, t, contentType.toString, xmlDecl = false, null)
 	}
 
 	private def getContentType(outputMessage: HttpOutputMessage) = {

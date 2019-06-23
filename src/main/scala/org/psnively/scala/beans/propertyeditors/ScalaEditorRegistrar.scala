@@ -16,9 +16,9 @@
 
 package org.psnively.scala.beans.propertyeditors
 
-import scala.util.matching.Regex
+import org.springframework.beans.{PropertyEditorRegistrar, PropertyEditorRegistry}
 
-import org.springframework.beans.{PropertyEditorRegistry, PropertyEditorRegistrar}
+import scala.util.matching.Regex
 
 /**
  * Property editor registrar for Scala property editors.

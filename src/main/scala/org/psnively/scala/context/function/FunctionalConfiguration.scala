@@ -16,22 +16,23 @@
 
 package org.psnively.scala.context.function
 
+import org.psnively.scala.beans.factory.function.{FunctionalRootBeanDefinition, InitDestroyFunctionBeanPostProcessor}
+import org.psnively.scala.util.TypeTagUtils.typeToClass
+import org.springframework.beans.BeansException
+import org.springframework.beans.factory.config.{BeanDefinition, BeanDefinitionHolder, ConfigurableBeanFactory}
+import org.springframework.beans.factory.support.{BeanDefinitionReaderUtils, BeanNameGenerator}
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+import org.springframework.beans.factory.{BeanFactory, BeanNotOfRequiredTypeException, NoSuchBeanDefinitionException}
+import org.springframework.context.annotation.AnnotatedBeanDefinitionReader
+import org.springframework.context.support.GenericApplicationContext
+import org.springframework.core.env.{Environment, Profiles}
+import org.springframework.util.Assert.state
+import org.springframework.util.StringUtils
+
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 import scala.reflect.runtime.currentMirror
 import scala.reflect.runtime.universe._
-
-import org.springframework.beans.factory.BeanFactory
-import org.springframework.beans.factory.config.{BeanDefinition, BeanDefinitionHolder, ConfigurableBeanFactory}
-import org.springframework.beans.factory.support.{BeanDefinitionReaderUtils, BeanDefinitionRegistry, BeanNameGenerator, RootBeanDefinition}
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
-import org.springframework.context.annotation.AnnotatedBeanDefinitionReader
-import org.springframework.context.support.GenericApplicationContext
-import org.springframework.core.env.Environment
-import org.psnively.scala.beans.factory.function.{FunctionalRootBeanDefinition, InitDestroyFunctionBeanPostProcessor}
-import org.psnively.scala.util.TypeTagUtils.typeToClass
-import org.springframework.util.Assert.state
-import org.springframework.util.StringUtils
 
 /**
  * Base trait used to declare one or more Spring Beans that may be processed by the Spring
@@ -159,7 +160,7 @@ trait FunctionalConfiguration extends DelayedInit {
     BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.beanRegistry)
 
     new BeanLookupFunction[T] {
-      def apply() = beanFactory.getBean(beanName, beanType)
+      def apply(): T = beanFactory.getBean(beanName, beanType)
 
       def init(initFunction: T => Unit): BeanLookupFunction[T] = {
   initDestroyProcessor.registerInitFunction(beanName, initFunction)
@@ -239,7 +240,7 @@ trait FunctionalConfiguration extends DelayedInit {
     *         the given profiles are not active
     */
   protected def profile[T](profiles: String*)(function: => T): Option[T] = {
-    if (environment.acceptsProfiles(profiles: _*)) {
+    if (environment.acceptsProfiles(Profiles.of(profiles: _*))) {
       Option(function)
     } else {
       None
@@ -323,8 +324,8 @@ trait FunctionalConfiguration extends DelayedInit {
   }
 
   private def registerInitDestroyProcessor(): Unit = {
-    if (!beanRegistry.getBeanFactory().containsBean(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME)) {
-      beanRegistry.getBeanFactory().registerSingleton(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME, new InitDestroyFunctionBeanPostProcessor())
+    if (!beanRegistry.getBeanFactory.containsBean(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME)) {
+      beanRegistry.getBeanFactory.registerSingleton(INIT_DESTROY_FUNCTION_PROCESSOR_BEAN_NAME, new InitDestroyFunctionBeanPostProcessor())
     }
   }
 

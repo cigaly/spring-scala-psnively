@@ -16,14 +16,14 @@
 
 package org.psnively.scala.context.function
 
+import org.psnively.scala.context.RichApplicationContext
+import org.psnively.scala.util.TypeTagUtils.typeToClass
+import org.springframework.beans.BeanUtils
+import org.springframework.beans.factory.support.{BeanNameGenerator, DefaultBeanNameGenerator}
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.util.CollectionUtils
 
 import scala.jdk.CollectionConverters._
-import org.springframework.beans.BeanUtils
-import org.springframework.beans.factory.support.{DefaultBeanNameGenerator, BeanNameGenerator}
-import org.psnively.scala.context.RichApplicationContext
-import org.psnively.scala.util.TypeTagUtils.typeToClass
 import scala.reflect.ClassTag
 
 /**
@@ -67,7 +67,7 @@ class FunctionalConfigApplicationContext
 	def registerClasses(configurationClasses: Class[_ <: FunctionalConfiguration]*): Unit = {
 		require(!CollectionUtils.isEmpty(configurationClasses.asJava),
 		        "At least one functional configuration class must be specified")
-		val configurations = configurationClasses.map(BeanUtils.instantiate(_))
+		val configurations = configurationClasses.map(BeanUtils.instantiateClass(_))
 		registerConfigurations(configurations: _*)
 	}
 
@@ -83,17 +83,17 @@ class FunctionalConfigApplicationContext
 		configurations.foreach(_.register(this, beanNameGenerator))
 	}
 
-	def apply[T: ClassTag]() = {
+	def apply[T: ClassTag](): T = {
 		getBean(typeToClass[T])
 	}
 
-	def apply[T: ClassTag](name: String) =
+	def apply[T: ClassTag](name: String): T =
 		getBean(name, typeToClass[T])
 
-	def beanNamesForType[T: ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean) =
+	def beanNamesForType[T: ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean): IndexedSeq[String] =
 		getBeanNamesForType(typeToClass[T], includeNonSingletons, allowEagerInit)
 
-	def beansOfType[T: ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean) =
+	def beansOfType[T: ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean): Map[String, T] =
 		getBeansOfType(typeToClass[T], includeNonSingletons, allowEagerInit).asScala.toMap
 }
 

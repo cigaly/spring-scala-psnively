@@ -23,7 +23,7 @@ package org.psnively.scala.context.function
  * @author Arjen Poutsma
  * @see FunctionalConfiguration
  */
-trait BeanLookupFunction[T] extends Function0[T] {
+trait BeanLookupFunction[T] extends (() => T) {
 
 	/**
 	 * Registers an initialization function.

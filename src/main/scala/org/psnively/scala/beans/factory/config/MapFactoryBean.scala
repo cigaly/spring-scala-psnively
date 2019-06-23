@@ -17,7 +17,8 @@
 package org.psnively.scala.beans.factory.config
 
 import org.springframework.beans.factory.config.AbstractFactoryBean
-import scala.collection.{mutable, Map}
+
+import scala.collection.{Map, mutable}
 
 /**
  * Simple factory for shared [[scala.collection.Map]] instances. Allows for central setup
@@ -36,7 +37,7 @@ class MapFactoryBean[T, U](val sourceMap: Map[T, U],
 		this(sourceMap, Map.newBuilder[T, U] _)
 	}
 
-	override def getObjectType = classOf[Map[T, U]]
+	override def getObjectType: Class[Map[T, U]] = classOf[Map[T, U]]
 
 	override def createInstance(): Map[T, U] = {
 		val builder = builderFunction()

@@ -17,6 +17,7 @@
 package org.psnively.scala.beans.factory.config
 
 import org.springframework.beans.factory.config.AbstractFactoryBean
+
 import scala.collection.mutable
 
 /**
@@ -36,7 +37,7 @@ class SetFactoryBean[T](val sourceSet: scala.collection.Set[T],
 		this(sourceSet, scala.collection.Set.newBuilder[T] _)
 	}
 
-	override def getObjectType = classOf[scala.collection.Set[T]]
+	override def getObjectType: Class[collection.Set[T]] = classOf[scala.collection.Set[T]]
 
 	override def createInstance(): scala.collection.Set[T] = {
 		val builder = builderFunction()

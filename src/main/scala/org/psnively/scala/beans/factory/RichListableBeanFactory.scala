@@ -16,6 +16,8 @@
 
 package org.psnively.scala.beans.factory
 
+import org.springframework.beans.BeansException
+
 import scala.reflect.ClassTag
 
 /**

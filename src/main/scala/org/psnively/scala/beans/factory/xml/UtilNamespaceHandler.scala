@@ -16,11 +16,11 @@
 
 package org.psnively.scala.beans.factory.xml
 
+import org.psnively.scala.beans.factory.config.{MapFactoryBean, SeqFactoryBean, SetFactoryBean}
+import org.springframework.beans.factory.support.BeanDefinitionBuilder
+import org.springframework.beans.factory.xml.{AbstractSingleBeanDefinitionParser, NamespaceHandlerSupport, ParserContext}
 import org.springframework.util.StringUtils
 import org.w3c.dom.Element
-import org.springframework.beans.factory.xml.{ParserContext, AbstractSingleBeanDefinitionParser, NamespaceHandlerSupport}
-import org.springframework.beans.factory.support.BeanDefinitionBuilder
-import org.psnively.scala.beans.factory.config.{MapFactoryBean, SetFactoryBean, SeqFactoryBean}
 
 /**
  * Namespace handler for the `scala-util` namespace.
@@ -46,7 +46,7 @@ class UtilNamespaceHandler extends NamespaceHandlerSupport {
 
 	class SeqBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
-		protected override def getBeanClass(element: Element) = classOf[SeqFactoryBean[_]]
+		protected override def getBeanClass(element: Element): Class[SeqFactoryBean[_]] = classOf[SeqFactoryBean[_]]
 
 		protected override def doParse(element: Element,
 		                               parserContext: ParserContext,

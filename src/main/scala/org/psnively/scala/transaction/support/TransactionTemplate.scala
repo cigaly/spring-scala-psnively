@@ -16,8 +16,8 @@
 
 package org.psnively.scala.transaction.support
 
-import org.springframework.transaction.support.{TransactionCallback, TransactionOperations}
-import org.springframework.transaction.{TransactionDefinition, PlatformTransactionManager, TransactionStatus}
+import org.springframework.transaction.support.TransactionOperations
+import org.springframework.transaction.{PlatformTransactionManager, TransactionDefinition, TransactionException, TransactionStatus}
 
 /**
  * Scala-based convenience wrapper for the Spring
@@ -56,10 +56,8 @@ class TransactionTemplate(val javaTemplate: TransactionOperations) {
    * @throws TransactionException in case of initialization, rollback, or system errors
    */
   def execute[T](action: TransactionStatus => T): T = {
-    javaTemplate.execute(new TransactionCallback[T] {
-      def doInTransaction(status: TransactionStatus) = {
-        action.apply(status)
-      }
+    javaTemplate.execute((status: TransactionStatus) => {
+      action.apply(status)
     })
   }
 
