@@ -71,7 +71,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @return the converted object
    */
   def getForAny[T: ClassTag](url: String, uriVariables: Any*): Option[T] = {
-    Option(javaTemplate.getForObject(url, typeToClass[T], asInstanceOfAnyRef(uriVariables): _*))
+    Option(javaTemplate.getForObject(url, typeToClass[T], asInstanceOfAnyRef(uriVariables.toSeq): _*))
   }
 
   /**
@@ -109,7 +109,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @return the entity
    */
   def getForEntity[T: ClassTag](url: String, uriVariables: Any*): ResponseEntity[T] = {
-    javaTemplate.getForEntity(url, typeToClass[T], asInstanceOfAnyRef(uriVariables): _*)
+    javaTemplate.getForEntity(url, typeToClass[T], asInstanceOfAnyRef(uriVariables.toSeq): _*)
   }
 
   /**
@@ -146,7 +146,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @return all HTTP headers of that resource
    */
   def headForHeaders(url: String, uriVariables: Any*): HttpHeaders = {
-    javaTemplate.headForHeaders(url, asInstanceOfAnyRef(uriVariables): _*)
+    javaTemplate.headForHeaders(url, asInstanceOfAnyRef(uriVariables.toSeq): _*)
   }
 
   /**
@@ -189,7 +189,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @see HttpEntity
    */
   def postForLocation(url: String, request: Option[Any], uriVariables: Any*): URI = {
-    javaTemplate.postForLocation(url, request.orNull, asInstanceOfAnyRef(uriVariables): _*)
+    javaTemplate.postForLocation(url, request.orNull, asInstanceOfAnyRef(uriVariables.toSeq): _*)
   }
 
   /**
@@ -244,7 +244,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @see HttpEntity
    */
   def postForObject[T: ClassTag](url: String, request: Option[Any], uriVariables: Any*): Option[T] = {
-    Option(javaTemplate.postForObject(url, request.orNull, typeToClass[T], asInstanceOfAnyRef(uriVariables)))
+    Option(javaTemplate.postForObject(url, request.orNull, typeToClass[T], asInstanceOfAnyRef(uriVariables.toSeq)))
   }
 
   /**
@@ -298,7 +298,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @see HttpEntity
    */
   def postForEntity[T: ClassTag](url: String, request: Option[Any], uriVariables: Any*): ResponseEntity[T] = {
-    javaTemplate.postForEntity(url, request.orNull, typeToClass[T], asInstanceOfAnyRef(uriVariables))
+    javaTemplate.postForEntity(url, request.orNull, typeToClass[T], asInstanceOfAnyRef(uriVariables.toSeq))
   }
 
   /**
@@ -352,7 +352,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @see HttpEntity
    */
   def put(url: String, request: Option[Any], uriVariables: Any*): Unit = {
-    javaTemplate.put(url, request.orNull, asInstanceOfAnyRef(uriVariables))
+    javaTemplate.put(url, request.orNull, asInstanceOfAnyRef(uriVariables.toSeq))
   }
 
   /**
@@ -395,7 +395,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @param uriVariables the variables to expand in the template
    */
   def delete(url: String, uriVariables: Any*): Unit = {
-    javaTemplate.delete(url, asInstanceOfAnyRef(uriVariables))
+    javaTemplate.delete(url, asInstanceOfAnyRef(uriVariables.toSeq))
   }
 
   /**
@@ -430,7 +430,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    * @return the value of the allow header
    */
   def optionsForAllow(url: String, uriVariables: Any*): Set[HttpMethod] = {
-    javaTemplate.optionsForAllow(url, asInstanceOfAnyRef(uriVariables)).asScala
+    javaTemplate.optionsForAllow(url, asInstanceOfAnyRef(uriVariables.toSeq)).asScala
   }
 
   /**
@@ -470,7 +470,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
    */
   def exchange[T: ClassTag](url: String, method: HttpMethod, requestEntity: Option[HttpEntity[_]], uriVariables: Any*): ResponseEntity[T] = {
     javaTemplate
-        .exchange(url, method, requestEntity.orNull, typeToClass[T], asInstanceOfAnyRef(uriVariables): _*)
+        .exchange(url, method, requestEntity.orNull, typeToClass[T], asInstanceOfAnyRef(uriVariables.toSeq): _*)
   }
 
   /**
@@ -522,7 +522,7 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
                 (responseFunction: ClientHttpResponse => T): Option[T] = {
     Option(javaTemplate
         .execute(url, method, functionToRequestCallback(requestFunction), functionToResponseExtractor(responseFunction),
-      asInstanceOfAnyRef(uriVariables)))
+      asInstanceOfAnyRef(uriVariables.toSeq)))
   }
 
   /**
@@ -569,16 +569,12 @@ class RestTemplate(val javaTemplate: org.springframework.web.client.RestOperatio
   }
 
   private def functionToRequestCallback(function: ClientHttpRequest => Unit): RequestCallback =
-    new RequestCallback {
-      def doWithRequest(request: ClientHttpRequest): Unit = {
-        function(request)
-      }
+    (request: ClientHttpRequest) => {
+      function(request)
     }
 
   private def functionToResponseExtractor[T](function: ClientHttpResponse => T): ResponseExtractor[T] =
-    new ResponseExtractor[T] {
-      def extractData(response: ClientHttpResponse): T = function(response)
-    }
+    (response: ClientHttpResponse) => function(response)
 
 }
 
@@ -592,5 +588,5 @@ object RestTemplate {
 		ClassUtils.isPresent("com.fasterxml.jackson.databind.ObjectMapper",
 		                     classOf[RestTemplate].getClassLoader) &&
 				ClassUtils.isPresent("com.fasterxml.jackson.core.JsonGenerator",
-				                     classOf[RestTemplate].getClassLoader);
+				                     classOf[RestTemplate].getClassLoader)
 }

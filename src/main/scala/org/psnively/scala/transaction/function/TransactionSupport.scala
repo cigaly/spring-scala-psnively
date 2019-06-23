@@ -59,8 +59,8 @@ trait TransactionSupport {
    * public class Config {}
    * }}}
    *
-   * @param transactionMode one of [[org.psnively.scala.context.function.AspectJTransactionMode]]
-   * or [[org.psnively.scala.context.function.ProxyTransactionMode]]. Defaults to
+   * @param transactionMode one of [[org.psnively.scala.transaction.function.AspectJTransactionMode]]
+   * or [[org.psnively.scala.transaction.function.ProxyTransactionMode]]. Defaults to
    * `ProxyTransactionMode`
    * @param transactionManagerName transaction manager bean name.
    * Defaults to `TransactionSupport.DEFAULT_TRANSACTION_MANAGER_NAME`

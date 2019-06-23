@@ -16,9 +16,9 @@
 
 package org.psnively.scala.context.function
 
-import org.springframework.context.support.GenericApplicationContext
 import org.springframework.beans.factory.support.BeanNameGenerator
-import org.springframework.context.annotation.{ScopedProxyMode, ScopeMetadataResolver, ClassPathBeanDefinitionScanner, AnnotationConfigUtils}
+import org.springframework.context.annotation.{AnnotationConfigUtils, ClassPathBeanDefinitionScanner, ScopeMetadataResolver, ScopedProxyMode}
+import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.`type`.filter.TypeFilter
 
 /**
@@ -104,12 +104,12 @@ trait ContextSupport {
 			val scanner = new ClassPathBeanDefinitionScanner(beanRegistry, useDefaultFilters)
 			scanner.setResourceLoader(applicationContext)
 			scanner.setEnvironment(environment)
-			includeFilters.foreach(scanner.addIncludeFilter(_))
-			excludeFilters.foreach(scanner.addExcludeFilter(_))
-			resourcePattern.foreach(scanner.setResourcePattern(_))
+			includeFilters.foreach(scanner.addIncludeFilter)
+			excludeFilters.foreach(scanner.addExcludeFilter)
+			resourcePattern.foreach(scanner.setResourcePattern)
 			scanner.setBeanNameGenerator(beanNameGenerator.getOrElse(defaultBeanNameGenerator))
-			scopeResolver.foreach(scanner.setScopeMetadataResolver(_))
-			scopedProxy.foreach(scanner.setScopedProxyMode(_))
+			scopeResolver.foreach(scanner.setScopeMetadataResolver)
+			scopedProxy.foreach(scanner.setScopedProxyMode)
 			scanner.scan(basePackages: _*)
 		})
 	}
@@ -121,7 +121,7 @@ trait ContextSupport {
 	 * @param basePackages the packages to check for annotated classes
 	 */
 	def componentScan(basePackages: String*): Unit = {
-		componentScan(basePackages = basePackages)
+		componentScan(basePackages = basePackages.toSeq)
 	}
 
 }

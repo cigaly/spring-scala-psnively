@@ -84,14 +84,14 @@ trait FunctionalConfiguration extends DelayedInit {
     *
     * @return the bean factory
     */
-  protected def beanFactory: BeanFactory = applicationContext.getBeanFactory()
+  protected def beanFactory: BeanFactory = applicationContext.getBeanFactory
 
   /**
     * Returns the bean registry associated with this functional configuration.
     *
     * @return the bean registry
     */
-  protected def beanRegistry = applicationContext
+  protected def beanRegistry: GenericApplicationContext = applicationContext
 
   /**
     * Returns the environment associated with this functional configuration.
