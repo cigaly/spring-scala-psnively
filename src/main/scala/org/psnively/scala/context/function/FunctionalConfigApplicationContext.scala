@@ -91,7 +91,7 @@ class FunctionalConfigApplicationContext
 		getBean(name, typeToClass[T])
 
 	def beanNamesForType[T: ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean): IndexedSeq[String] =
-		getBeanNamesForType(typeToClass[T], includeNonSingletons, allowEagerInit)
+		getBeanNamesForType(typeToClass[T], includeNonSingletons, allowEagerInit).toIndexedSeq
 
 	def beansOfType[T: ClassTag](includeNonSingletons: Boolean, allowEagerInit: Boolean): Map[String, T] =
 		getBeansOfType(typeToClass[T], includeNonSingletons, allowEagerInit).asScala.toMap

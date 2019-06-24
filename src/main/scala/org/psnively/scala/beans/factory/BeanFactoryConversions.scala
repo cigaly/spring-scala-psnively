@@ -72,7 +72,7 @@ private[psnively] class DefaultRichListableBeanFactory(beanFactory: ListableBean
 	                        allowEagerInit: Boolean = true): Seq[String] = {
 		beanFactory.getBeanNamesForType(typeToClass[T],
 		                                includeNonSingletons,
-		                                allowEagerInit)
+		                                allowEagerInit).toIndexedSeq
 	}
 
   def beansOfType[T: ClassTag](includeNonSingletons: Boolean = true,

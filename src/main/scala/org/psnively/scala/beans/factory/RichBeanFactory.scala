@@ -41,8 +41,8 @@ trait RichBeanFactory {
 			Option(apply[T]())
 		}
 		catch {
+      case _: NoUniqueBeanDefinitionException => None
 			case _: NoSuchBeanDefinitionException => None
-			case _: NoUniqueBeanDefinitionException => None
 		}
 	}
 

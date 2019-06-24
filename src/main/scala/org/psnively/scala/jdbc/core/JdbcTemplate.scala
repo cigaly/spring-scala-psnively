@@ -74,7 +74,7 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
   @throws(classOf[DataAccessException])
   def executeConnection[T](action: Connection => T): T = {
     javaTemplate.execute(new ConnectionCallback[T] {
-      def doInConnection(con: Connection) = action(con)
+      def doInConnection(con: Connection): T = action(con)
     })
   }
 
@@ -98,7 +98,7 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
   @throws(classOf[DataAccessException])
   def executeStatement[T](action: Statement => T): T = {
     javaTemplate.execute(new StatementCallback[T] {
-      def doInStatement(stmt: Statement) = action(stmt)
+      def doInStatement(stmt: Statement): T = action(stmt)
     })
   }
 
@@ -265,7 +265,7 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
   @throws(classOf[DataAccessException])
   def batchUpdate(sql: String*): Seq[Int] = {
   //def batchUpdate(sql: Seq[String]): Seq[Int] = {
-    javaTemplate.batchUpdate(sql.toArray: _*)
+    javaTemplate.batchUpdate(sql.toArray: _*).toIndexedSeq
   }
 
 
@@ -883,7 +883,7 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
       }
 
       def getBatchSize: Int = batchSize
-    })
+    }).toIndexedSeq
   }
 
   /**
@@ -899,7 +899,7 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
   @throws(classOf[DataAccessException])
   def batchUpdate(sql: String, batchArgs: Seq[Seq[Any]]): Seq[Int] = {
     javaTemplate
-        .batchUpdate(sql, batchArgs.map(args => asInstanceOfAnyRef(args).toArray).asJava)
+        .batchUpdate(sql, batchArgs.map(args => asInstanceOfAnyRef(args).toArray).asJava).toIndexedSeq
   }
 
   /**
@@ -918,7 +918,7 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
     javaTemplate.batchUpdate(sql,
                              batchArgs.map(args => asInstanceOfAnyRef(args).toArray)
                                  .asJava,
-                             types.toArray)
+                             types.toArray).toIndexedSeq
   }
 
   /**
@@ -941,11 +941,8 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
     javaTemplate.batchUpdate(sql,
                              batchArgs.asJavaCollection,
                              batchSize,
-                             new ParameterizedPreparedStatementSetter[T] {
-                               def setValues(ps: PreparedStatement, argument: T): Unit = {
-                                 setterCallback(ps, argument)
-                               }
-                             }).map(_.toSeq)
+                            (ps: PreparedStatement, argument: T) => setterCallback(ps, argument))
+      .map(_.toIndexedSeq).toIndexedSeq
   }
 
   //-------------------------------------------------------------------------
@@ -1016,8 +1013,8 @@ class JdbcTemplate(val javaTemplate: org.springframework.jdbc.core.JdbcTemplate)
     map.asScala.toMap.view.mapValues(_.asInstanceOf[Any]).toMap
   }
 
-  private def asInstanceOfAnyRef(seq: Seq[Any]): Seq[AnyRef] = {
-    seq.map(_.asInstanceOf[AnyRef])
+  private def asInstanceOfAnyRef(seq: Any*): Seq[AnyRef] = {
+    seq.toSeq.map(_.asInstanceOf[AnyRef])
   }
 
 }
